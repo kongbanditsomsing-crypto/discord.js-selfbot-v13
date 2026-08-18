@@ -1,5 +1,5 @@
 const express = require('express');
-const { Client } = require('discord.js-selfbot-v13');
+const { Client } = require('./src/index.js');
 const path = require('path');
 
 const app = express();
