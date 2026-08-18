@@ -2,32 +2,116 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Selfbot Mobile Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Discord Mobile Login</title>
     <style>
-        body { background: #313338; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .login-box { background: #2b2d31; padding: 25px; border-radius: 8px; width: 90%; max-width: 400px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
-        input, button { width: 100%; padding: 12px; margin-top: 12px; border-radius: 4px; border: none; box-sizing: border-box; }
-        input { background: #1e1f22; color: white; outline: none; }
-        button { background: #5865f2; color: white; font-weight: bold; cursor: pointer; }
-        button:hover { background: #4752c4; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: #313338;
+            color: #dbdee1;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+        .login-box {
+            background: #2b2d31;
+            padding: 24px 20px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+        h2 {
+            color: #f2f3f5;
+            font-size: 22px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        p.subtitle {
+            color: #949ba4;
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            color: #b5bac1;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            background: #1e1f22;
+            color: #f2f3f5;
+            border: 1px solid #111214;
+            border-radius: 6px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+            margin-bottom: 16px;
+        }
+        input:focus {
+            border-color: #5865f2;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #5865f2;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:active {
+            background: #4752c4;
+        }
+        #status {
+            margin-top: 16px;
+            font-size: 14px;
+            text-align: center;
+            word-break: break-all;
+            min-height: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="login-box">
         <h2>Discord Login</h2>
-        <p>กรอก Token เพื่อเข้าใช้งานระบบ</p>
-        <input type="password" id="tokenInput" placeholder="Paste Token here...">
+        <p class="subtitle">ระบบจัดการ Selfbot บนมือถือ</p>
+        
+        <label for="tokenInput">Account Token</label>
+        <input type="password" id="tokenInput" placeholder="วาง Token ของคุณที่นี่..." autocomplete="off">
+        
         <button onclick="loginBot()">เข้าสู่ระบบ</button>
-        <p id="status" style="margin-top: 10px; font-size: 14px;"></p>
+        <p id="status"></p>
     </div>
 
     <script>
         async function loginBot() {
-            const token = document.getElementById('tokenInput').value;
+            const token = document.getElementById('tokenInput').value.trim();
             const status = document.getElementById('status');
-            status.innerText = 'กำลังตรวจสอบ Token...';
-            status.style.color = '#e3e5e8';
+            
+            if (!token) {
+                status.style.color = '#f23f43';
+                status.innerText = 'กรุณากรอก Token ก่อนใช้งาน';
+                return;
+            }
+
+            status.style.color = '#dbdee1';
+            status.innerText = 'กำลังตรวจสอบการเชื่อมต่อ...';
             
             try {
                 const response = await fetch('/api/login', {
@@ -39,7 +123,7 @@
                 const data = await response.json();
                 if(data.success) {
                     status.style.color = '#23a55a';
-                    status.innerText = 'สำเร็จ! ล็อกอินเป็น: ' + data.username;
+                    status.innerText = 'สำเร็จ! เข้าสู่ระบบในชื่อ: ' + data.username;
                 } else {
                     status.style.color = '#f23f43';
                     status.innerText = 'Error: ' + data.error;
