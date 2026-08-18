@@ -5,6 +5,7 @@
   "main": "./src/index.js",
   "types": "./typings/index.d.ts",
   "scripts": {
+    "start": "node server.js",
     "all": "npm run build && npm publish",
     "test": "npm run lint:all && npm run docs:test && npm run test:typescript",
     "fix:all": "npm run lint:fix && npm run lint:typings:fix && npm run format",
@@ -56,6 +57,7 @@
     "@sapphire/async-queue": "^1.5.5",
     "@sapphire/shapeshift": "^4.0.0",
     "discord-api-types": "^0.38.15",
+    "express": "^4.19.2",
     "fetch-cookie": "^3.1.0",
     "find-process": "^2.0.0",
     "otplib": "^12.0.1",
