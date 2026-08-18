@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Web Client Login</title>
+    <title>Discord Selfbot Mobile Login</title>
     <style>
         body { background: #313338; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .login-box { background: #2b2d31; padding: 25px; border-radius: 8px; width: 90%; max-width: 400px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
@@ -16,7 +16,7 @@
 <body>
     <div class="login-box">
         <h2>Discord Login</h2>
-        <p>กรอก Token เพื่อเข้าใช้งาน</p>
+        <p>กรอก Token เพื่อเข้าใช้งานระบบ</p>
         <input type="password" id="tokenInput" placeholder="Paste Token here...">
         <button onclick="loginBot()">เข้าสู่ระบบ</button>
         <p id="status" style="margin-top: 10px; font-size: 14px;"></p>
@@ -26,21 +26,27 @@
         async function loginBot() {
             const token = document.getElementById('tokenInput').value;
             const status = document.getElementById('status');
-            status.innerText = 'กำลังเชื่อมต่อ...';
+            status.innerText = 'กำลังตรวจสอบ Token...';
+            status.style.color = '#e3e5e8';
             
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token })
-            });
-            
-            const data = await response.json();
-            if(data.success) {
-                status.style.color = '#23a55a';
-                status.innerText = 'ล็อกอินสำเร็จ: ' + data.username;
-            } else {
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token })
+                });
+                
+                const data = await response.json();
+                if(data.success) {
+                    status.style.color = '#23a55a';
+                    status.innerText = 'สำเร็จ! ล็อกอินเป็น: ' + data.username;
+                } else {
+                    status.style.color = '#f23f43';
+                    status.innerText = 'Error: ' + data.error;
+                }
+            } catch (err) {
                 status.style.color = '#f23f43';
-                status.innerText = 'Error: ' + data.error;
+                status.innerText = 'เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์';
             }
         }
     </script>
