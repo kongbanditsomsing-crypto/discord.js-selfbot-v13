@@ -1,5 +1,5 @@
 const express = require('express');
-const { Client, GatewayIntentBits } = require('discord.js');
+const { Client } = require('./src/index.js');
 const path = require('path');
 
 const app = express();
@@ -12,15 +12,8 @@ app.post('/api/login', async (req, res) => {
         return res.status(400).json({ success: false, error: 'กรุณากรอก Bot Token' });
     }
 
-    const client = new Client({
-        intents: [
-            GatewayIntentBits.Guilds,
-            GatewayIntentBits.GuildMessages,
-            GatewayIntentBits.MessageContent
-        ]
-    });
+    const client = new Client({ checkUpdate: false });
 
-    // ตั้งเวลา Timeout เผื่อ Token ผิดแล้วมันค้างรอนานเกินไป (10 วินาที)
     const timeout = setTimeout(() => {
         if (!res.headersSent) {
             res.status(400).json({ success: false, error: 'เชื่อมต่อล้มเหลว หรือ Bot Token ไม่ถูกต้อง' });
@@ -34,7 +27,6 @@ app.post('/api/login', async (req, res) => {
         if (!res.headersSent) {
             res.json({ success: true, username: botName });
         }
-        // ปิดการเชื่อมต่อชั่วคราวเพื่อเคลียร์แรมบน Server ของ Render
         client.destroy();
     });
 
@@ -44,7 +36,7 @@ app.post('/api/login', async (req, res) => {
         clearTimeout(timeout);
         console.error('Bot Login Error:', error);
         if (!res.headersSent) {
-            res.status(400).json({ success: false, error: 'Bot Token ไม่ถูกต้อง หรือยังไม่ได้เปิด Message Content Intent ใน Discord Developer Portal' });
+            res.status(400).json({ success: false, error: 'Bot Token ไม่ถูกต้อง หรือยังไม่ได้เปิด Intent ใน Developer Portal' });
         }
     }
 });
